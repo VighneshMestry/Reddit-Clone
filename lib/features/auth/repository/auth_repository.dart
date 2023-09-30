@@ -1,10 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:reddit_clone/core/constants/constants.dart';
+import 'package:reddit_clone/core/constants/firebase_constants.dart';
+import 'package:reddit_clone/core/failure.dart';
 import 'package:reddit_clone/core/providers/firebase_providers.dart';
+import 'package:reddit_clone/core/type_defs.dart';
+import 'package:reddit_clone/models/user_model.dart';
 
-final authRepositoryProvider = Provider((ref) => AuthRepository(auth: ref.read(authProvider), googleSignIn: ref.read(googleSignInProvider), firestore: ref.read(firestoreProvider)));
+final authRepositoryProvider = Provider((ref) => AuthRepository(
+    auth: ref.read(authProvider),
+    googleSignIn: ref.read(googleSignInProvider),
+    firestore: ref.read(firestoreProvider)));
 
 class AuthRepository {
   final FirebaseAuth _auth;
@@ -19,22 +28,50 @@ class AuthRepository {
         _googleSignIn = googleSignIn,
         _firestore = firestore;
 
-  void signInWithGoogle() async {
+  CollectionReference get _users =>
+      _firestore.collection(FirebaseConstants.usersCollection);
+
+  FutureEither<UserModel> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
       final googleAuth = await googleUser?.authentication;
-
       final credentials = GoogleAuthProvider.credential(
         idToken: googleAuth?.idToken,
         accessToken: googleAuth?.accessToken,
       );
-
       UserCredential userCredential =
           await _auth.signInWithCredential(credentials);
-      print(userCredential.user?.displayName);
+
+      late UserModel userModel;
+
+      if (userCredential.additionalUserInfo!.isNewUser) {
+        userModel = UserModel(
+          name: userCredential.user!.displayName ?? 'No Name',
+          profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
+          banner: Constants.bannerDefault,
+          uid: userCredential.user!.uid,
+          isAuthenticated: true,
+          karma: 0,
+          award: [],
+        );
+        await _users.doc(userModel.uid).set(userModel.toMap());
+      }
+      userModel = UserModel(
+          name: userCredential.user!.displayName ?? 'No Name',
+          profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
+          banner: Constants.bannerDefault,
+          uid: userCredential.user!.uid,
+          isAuthenticated: true,
+          karma: 0,
+          award: [],
+        );
+        await _users.doc(userModel.uid).set(userModel.toMap());
+        print('Success!!!');
+      return right(userModel);
+    } on FirebaseException catch (e) {
+      throw e.message!;
     } catch (e) {
-      print(e);
+      return left(Failure(e.toString()));
     }
   }
 }
