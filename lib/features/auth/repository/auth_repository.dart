@@ -42,9 +42,10 @@ class AuthRepository {
       UserCredential userCredential =
           await _auth.signInWithCredential(credentials);
 
-      late UserModel userModel;
+      UserModel userModel;
 
       if (userCredential.additionalUserInfo!.isNewUser) {
+        print('++++++++++++++++++++++++++++++++++++++++++++++');
         userModel = UserModel(
           name: userCredential.user!.displayName ?? 'No Name',
           profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
@@ -54,24 +55,24 @@ class AuthRepository {
           karma: 0,
           award: [],
         );
-        await _users.doc(userModel.uid).set(userModel.toMap());
+        await _users.doc(userCredential.user!.uid).set(userModel.toMap());
+      } else {
+        print('=========================================================');
+        userModel = await getUserData(userCredential.user!.uid).first;
+        print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
       }
-      userModel = UserModel(
-          name: userCredential.user!.displayName ?? 'No Name',
-          profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
-          banner: Constants.bannerDefault,
-          uid: userCredential.user!.uid,
-          isAuthenticated: true,
-          karma: 0,
-          award: [],
-        );
-        await _users.doc(userModel.uid).set(userModel.toMap());
-        print('Success!!!');
+      print('Success!!!');
       return right(userModel);
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
+      print('___________________________________________________________________________________________');
+      print(e.toString());
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<UserModel> getUserData(String uid) {
+    return _users.doc(uid).snapshots().map((event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
   }
 }
