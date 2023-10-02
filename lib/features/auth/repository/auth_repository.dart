@@ -31,6 +31,8 @@ class AuthRepository {
   CollectionReference get _users =>
       _firestore.collection(FirebaseConstants.usersCollection);
 
+  Stream<User?> get authStateChange => _auth.authStateChanges();
+
   FutureEither<UserModel> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -45,7 +47,6 @@ class AuthRepository {
       UserModel userModel;
 
       if (userCredential.additionalUserInfo!.isNewUser) {
-        print('++++++++++++++++++++++++++++++++++++++++++++++');
         userModel = UserModel(
           name: userCredential.user!.displayName ?? 'No Name',
           profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
@@ -57,16 +58,13 @@ class AuthRepository {
         );
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {
-        print('=========================================================');
         userModel = await getUserData(userCredential.user!.uid).first;
-        print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
       }
-      print('Success!!!');
       return right(userModel);
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
-      print('___________________________________________________________________________________________');
+      // ignore: avoid_print
       print(e.toString());
       return left(Failure(e.toString()));
     }
