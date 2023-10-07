@@ -17,6 +17,8 @@ class AuthController extends StateNotifier<bool> {
         _ref = ref,
         super(false);
 
+  
+
   void signInWithGoogle(BuildContext context) async {
     state = true;
     final user = await _authRepository.signInWithGoogle();
