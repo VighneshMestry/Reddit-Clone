@@ -10,10 +10,13 @@ import 'package:reddit_clone/core/providers/firebase_providers.dart';
 import 'package:reddit_clone/core/type_defs.dart';
 import 'package:reddit_clone/models/user_model.dart';
 
-final authRepositoryProvider = Provider((ref) => AuthRepository(
+final authRepositoryProvider = Provider(
+  (ref) => AuthRepository(
+    firestore: ref.read(firestoreProvider),
     auth: ref.read(authProvider),
     googleSignIn: ref.read(googleSignInProvider),
-    firestore: ref.read(firestoreProvider)));
+  ),
+);
 
 class AuthRepository {
   final FirebaseAuth _auth;
