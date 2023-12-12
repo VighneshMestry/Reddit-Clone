@@ -31,8 +31,7 @@ class AuthRepository {
         _googleSignIn = googleSignIn,
         _firestore = firestore;
 
-  CollectionReference get _users =>
-      _firestore.collection(FirebaseConstants.usersCollection);
+  CollectionReference get _users => _firestore.collection(FirebaseConstants.usersCollection);
 
   Stream<User?> get authStateChange => _auth.authStateChanges();
 
@@ -57,7 +56,7 @@ class AuthRepository {
           uid: userCredential.user!.uid,
           isAuthenticated: true,
           karma: 0,
-          award: [],
+          // award: [],
         );
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {

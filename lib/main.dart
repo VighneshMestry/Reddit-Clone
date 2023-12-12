@@ -47,17 +47,18 @@ class _MyAppState extends ConsumerState<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'Reddit',
             theme: Pallete.darkModeAppTheme,
-            routerDelegate: RoutemasterDelegate(
-              routesBuilder: (context) {
-                if(user != null) {
-                  getData(ref, user);
-                  if(userModel != null){
-                    return loggedInRoute;
-                  }
-                }
-                return loggedOutRoute;
-              },
-            ),
+            // routerDelegate: RoutemasterDelegate(
+            //   routesBuilder: (context) {
+            //     if(user != null) {
+            //       getData(ref, user);
+            //       if(userModel != null){
+            //         return loggedInRoute;
+            //       }
+            //     }
+            //     return loggedOutRoute;
+            //   },
+            // ),
+            routerDelegate: RoutemasterDelegate(routesBuilder: (context) => loggedInRoute),
             routeInformationParser: const RoutemasterParser(),
           ),
           error: (error, stackTrace) => ErrorLine(error: error.toString()),

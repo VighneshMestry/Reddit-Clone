@@ -7,7 +7,7 @@ class UserModel {
   final String uid;
   final bool isAuthenticated;
   final int karma;
-  final List<String> award;
+  // final List<String> award;
   UserModel({
     required this.name,
     required this.profilePic,
@@ -15,7 +15,7 @@ class UserModel {
     required this.uid,
     required this.isAuthenticated,
     required this.karma,
-    required this.award,
+    // required this.award,
   });
 
   UserModel copyWith({
@@ -34,7 +34,7 @@ class UserModel {
       uid: uid ?? this.uid,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       karma: karma ?? this.karma,
-      award: award ?? this.award,
+      // award: award ?? this.award,
     );
   }
 
@@ -46,25 +46,38 @@ class UserModel {
       'uid': uid,
       'isAuthenticated': isAuthenticated,
       'karma': karma,
-      'award': award,
+      // 'award': award,
     };
   }
 
+  // factory UserModel.fromMap(Map<String, dynamic> map) {
+  //   return UserModel(
+  //     name: map['name'] as String,
+  //     profilePic: map['profilePic'] as String,
+  //     banner: map['banner'] as String,
+  //     uid: map['uid'] as String,
+  //     isAuthenticated: map['isAuthenticated'] as bool,
+  //     karma: map['karma'] as int,
+  //     // award: List<String>.from(map['award'] as List<String>),
+  //     award: List<String>.from(map['awards']) ?? [],
+  //   );
+  // }
+
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      name: map['name'] as String,
-      profilePic: map['profilePic'] as String,
-      banner: map['banner'] as String,
-      uid: map['uid'] as String,
-      isAuthenticated: map['isAuthenticated'] as bool,
-      karma: map['karma'] as int,
-      award: List<String>.from(map['award'] as List<String>),
+      name: map['name'] ?? '',
+      profilePic: map['profilePic'] ?? '',
+      banner: map['banner'] ?? '',
+      uid: map['uid'] ?? '',
+      isAuthenticated: map['isAuthenticated'] ?? false,
+      karma: map['karma']?.toInt() ?? 0,
+      // award: List<String>.from(map['awards']),
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(name: $name, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, award: $award)';
+    return 'UserModel(name: $name, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma)';  //, award: $award
   }
 
   @override
@@ -76,8 +89,8 @@ class UserModel {
         other.banner == banner &&
         other.uid == uid &&
         other.isAuthenticated == isAuthenticated &&
-        other.karma == karma &&
-        listEquals(other.award, award);
+        other.karma == karma ;
+        // listEquals(other.award, award);
   }
 
   @override
@@ -87,7 +100,7 @@ class UserModel {
         banner.hashCode ^
         uid.hashCode ^
         isAuthenticated.hashCode ^
-        karma.hashCode ^
-        award.hashCode;
+        karma.hashCode ;
+        // award.hashCode;
   }
 }
