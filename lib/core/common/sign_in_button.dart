@@ -4,11 +4,11 @@ import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 
-class SigninButton extends ConsumerWidget {
-  const SigninButton({super.key});
+class SignInButton extends ConsumerWidget {
+  const SignInButton({Key? key}) : super(key: key);
 
   void signInWithGoogle(BuildContext context, WidgetRef ref) {
-    ref.read(authControllerProvider.notifier).signInWithGoogle(context);   // authControllerProvider.notifier gives the value of the authController
+    ref.read(authControllerProvider.notifier).signInWithGoogle(context);
   }
 
   @override
@@ -30,7 +30,7 @@ class SigninButton extends ConsumerWidget {
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-          )
+          ),
         ),
       ),
     );

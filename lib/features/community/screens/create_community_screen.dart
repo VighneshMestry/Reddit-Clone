@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/common/loader.dart';
+import 'package:reddit_clone/features/community/controller/community_controller.dart';
 
 class CreateCommunityScreen extends ConsumerStatefulWidget {
   const CreateCommunityScreen({super.key});
@@ -18,48 +20,60 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     communityNameController.dispose();
   }
 
+  void createCommunity() {
+    ref.read(communityControllerProvider.notifier).createCommunity(
+          communityNameController.text.trim(),
+          context,
+        );
+  }
+
   // Benefits of using consumerstatefulwidget over statefulwidget are
+  // 0] consumerStatfulWidget already provides us with "ref" as well as "buildcontext"
   // 1] We can use 'ref' directly without mention 'WidgetRef' in the parameter of the build function
   // 2] We can use context in the 'initState' of the widget
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(communityControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create a community"),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text("Community name"),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: communityNameController,
-              decoration: const InputDecoration(
-                  hintText: "r/Community_name",
-                  filled: true,
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(18)),
-              maxLength: 21,
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
-                )
+      body: isLoading
+          ? const Loader()
+          : Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  const Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("Community name"),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: communityNameController,
+                    decoration: const InputDecoration(
+                        hintText: "r/Community_name",
+                        filled: true,
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(18)),
+                    maxLength: 21,
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () => createCommunity(),
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20))),
+                    child: const Text(
+                      "Create Community",
+                      style: TextStyle(fontSize: 17),
+                    ),
+                  ),
+                ],
               ),
-              child: const Text("Create Community", style: TextStyle(fontSize: 17),),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
