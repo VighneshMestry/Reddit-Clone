@@ -105,7 +105,8 @@ class AuthRepository {
   FutureEither<UserModel> signInWithGoogle() async {
     try {
       UserCredential userCredential;
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
         final googleAuth = await googleUser?.authentication;
 
@@ -114,7 +115,9 @@ class AuthRepository {
           idToken: googleAuth?.idToken,
         );
         userCredential = await _auth.signInWithCredential(credential);
-        UserModel userModel;
+      
+
+      UserModel userModel;
 
       if (userCredential.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
@@ -146,7 +149,8 @@ class AuthRepository {
       return left(Failure(e.toString()));
     }
   }
-    Stream<UserModel> getUserData(String uid) {
+
+  Stream<UserModel> getUserData(String uid) {
     return _users.doc(uid).snapshots().map((event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
   }
-  }
+}

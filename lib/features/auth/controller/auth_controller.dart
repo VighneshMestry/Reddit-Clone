@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:reddit_clone/core/common/error_line.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/auth/repository/auth_repository.dart';
 import 'package:reddit_clone/models/user_model.dart';
@@ -91,11 +90,12 @@ class AuthController extends StateNotifier<bool> {
     final user = await _authRepository.signInWithGoogle();
     state = false;
     user.fold(
-      (l) => ErrorLine(error: l.toString()),
+      (l) => showSnackBar(context, l.message),
       (userModel) => _ref.read(userProvider.notifier).update((state) => userModel),
     );
   }
-   Stream<UserModel> getUserData(String uid) {
+
+  Stream<UserModel> getUserData(String uid) {
     return _authRepository.getUserData(uid);
   }
 }

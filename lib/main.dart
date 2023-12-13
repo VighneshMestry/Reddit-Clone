@@ -100,12 +100,11 @@ class _MyAppState extends ConsumerState<MyApp> {
         .getUserData(data.uid)
         .first;
     ref.read(userProvider.notifier).update((state) => userModel);
+    // setState(() {});
   }
-
+  
   @override
   Widget build(BuildContext context) {
-
-    // This is the way how we handle the streamprovider by using "when" function  
     return ref.watch(authStateChangeProvider).when(
           data: (data) => MaterialApp.router(
             debugShowCheckedModeBanner: false,
@@ -116,6 +115,9 @@ class _MyAppState extends ConsumerState<MyApp> {
               routesBuilder: (context) {
                 if (data != null) {
                   getData(ref, data);
+                  print(userModel);
+                  print(
+                      "HELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLOOOOOOOOOOO");
                   if (userModel != null) {
                     return loggedInRoute;
                   }
@@ -123,7 +125,6 @@ class _MyAppState extends ConsumerState<MyApp> {
                 return loggedOutRoute;
               },
             ),
-            // routerDelegate: RoutemasterDelegate(routesBuilder: (context) => loggedInRoute),
             routeInformationParser: const RoutemasterParser(),
           ),
           error: (error, stackTrace) => ErrorLine(error: error.toString()),
