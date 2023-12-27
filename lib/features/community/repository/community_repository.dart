@@ -18,6 +18,9 @@ class CommunityRepository {
   CommunityRepository({required FirebaseFirestore firestore})
       : _firestore = firestore;
 
+  CollectionReference get _communities =>
+      _firestore.collection(FirebaseConstants.communitiesCollection);
+
   FutureVoid createCommunity(Community community) async {
     try {
       final communityDocs = await _communities.doc(community.name).get();
@@ -34,12 +37,14 @@ class CommunityRepository {
     }
   }
 
-
-  Stream<List<Community>> getUserCommunities (String uid) {
+  Stream<List<Community>> getUserCommunities(String uid) {
     // snapshots() provides the list of QuerySnapshot so the map function iterates the list and provides event which is the every single QuerySnapshot from the list
-    return _communities.where("members", arrayContains: uid).snapshots().map((event) {
+    return _communities
+        .where("members", arrayContains: uid)
+        .snapshots()
+        .map((event) {
       List<Community> communities = [];
-      for(var docs in event.docs){
+      for (var docs in event.docs) {
         // Here ths "event" received is in QuerySnapshot<Object> format so the event is converted to Community model by converting the event to community model and adding to the list
         communities.add(Community.fromMap(docs.data() as Map<String, dynamic>));
       }
@@ -48,9 +53,40 @@ class CommunityRepository {
   }
 
   Stream<Community> getCommunityByName(String name) {
-    return _communities.doc(name).snapshots().map((event) => Community.fromMap(event.data() as Map<String, dynamic>));
+    return _communities.doc(name).snapshots().map(
+        (event) => Community.fromMap(event.data() as Map<String, dynamic>));
   }
 
-  CollectionReference get _communities =>
-      _firestore.collection(FirebaseConstants.communitiesCollection);
+  FutureVoid editCommuity(Community community) async {
+    try {
+      return right(_communities.doc(community.name).update(community.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  Stream<List<Community>> searchCommunity(String query) {
+    return _communities
+        .where(
+          "name",
+          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+          isLessThan: query.isEmpty
+              ? null
+              : query.substring(0, query.length - 1) +
+                  String.fromCharCode(
+                    query.codeUnitAt(query.length - 1) + 1,
+                  ),
+        )
+        .snapshots()
+        .map((event) {
+      List<Community> communities = [];
+      for (var community in event.docs) {
+        communities
+            .add(Community.fromMap(community.data() as Map<String, dynamic>));
+      }
+      return communities;
+    });
+  }
 }

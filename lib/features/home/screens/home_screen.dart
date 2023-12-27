@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/features/home/delegate/search_community_delegate.dart';
 import 'package:reddit_clone/features/home/drawers/community_list_drawer.dart';
+import 'package:reddit_clone/features/home/drawers/profile_drawer.dart';
 // import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -13,8 +15,12 @@ class HomeScreen extends ConsumerWidget {
     // function actually creates the Scaffold widget being sought.
 
     // There are several ways to avoid this problem. The simplest is to use a Builder to get a context that is "under" the Scaffold.
-  void openDrawer(BuildContext context) {
+  void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
+  }
+
+  void displayEndDrawer(BuildContext context) {
+    Scaffold.of(context).openEndDrawer();
   }
 
   @override
@@ -27,24 +33,31 @@ class HomeScreen extends ConsumerWidget {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              onPressed: () => openDrawer(context),
+              onPressed: () => displayDrawer(context),
               icon: const Icon(Icons.menu),
             );
           }
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showSearch(context: context, delegate: SearchCommunityDelegate(ref: ref));
+            },
             icon: const Icon(Icons.search),
           ),
-          IconButton(
-            onPressed: () {},
-            // icon: const CircleAvatar(backgroundImage: NetworkImage("")),
-            icon: const Icon(Icons.person),
+          Builder(
+            builder: (context) {
+              return IconButton(
+                onPressed: () => displayEndDrawer(context),
+                // icon: const CircleAvatar(backgroundImage: NetworkImage("")),
+                icon: const Icon(Icons.person),
+              );
+            }
           )
         ],
       ),
       drawer: const CommunityListDrawer(),
+      endDrawer: const ProfileDrawer(),
     );
   }
 }
