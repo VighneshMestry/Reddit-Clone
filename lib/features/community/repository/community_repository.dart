@@ -37,11 +37,11 @@ class CommunityRepository {
     }
   }
 
-  FutureVoid joinCommunity (String communityName, String uid) async {
+  FutureVoid joinCommunity(String communityName, String uid) async {
     try {
       return right(_communities.doc(communityName).update({
-        'members' : FieldValue.arrayUnion([uid])
-      })); 
+        'members': FieldValue.arrayUnion([uid])
+      }));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -49,11 +49,11 @@ class CommunityRepository {
     }
   }
 
-  FutureVoid leaveCommunity (String communityName, String uid) async {
+  FutureVoid leaveCommunity(String communityName, String uid) async {
     try {
       return right(_communities.doc(communityName).update({
-        'members' : FieldValue.arrayRemove([uid])
-      })); 
+        'members': FieldValue.arrayRemove([uid])
+      }));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -112,5 +112,17 @@ class CommunityRepository {
       }
       return communities;
     });
+  }
+
+  FutureVoid addMods(String communityName, List<String> uids) async {
+    try {
+      return right(_communities
+          .doc(communityName)
+          .update({"mods": uids}));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 }

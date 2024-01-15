@@ -31,7 +31,7 @@ final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
       .getCommunityByName(name);
 });
 
-final searchCommunity = StreamProvider.family((ref, String query)  {
+final searchCommunity = StreamProvider.family((ref, String query) {
   return ref.watch(communityControllerProvider.notifier).searchCommunity(query);
 });
 
@@ -69,24 +69,25 @@ class CommunityController extends StateNotifier<bool> {
     });
   }
 
-  void joinCommunity (Community community, BuildContext context) async {
+  void joinCommunity(Community community, BuildContext context) async {
     final user = _ref.read(userProvider);
 
     Either<Failure, void> res;
-    if(community.members.contains(user!.uid)) {
+    if (community.members.contains(user!.uid)) {
       res = await _communityRepository.leaveCommunity(community.name, user.uid);
     } else {
       res = await _communityRepository.joinCommunity(community.name, user.uid);
     }
 
-    res.fold((l) => showSnackBar(context, l.message), (r) => {
-      if(community.members.contains(user.uid)) {
-        showSnackBar(context, "You left a community")
-      } else {
-        showSnackBar(context, "You joined a community")
-      }
-    });
-  } 
+    res.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) => {
+              if (community.members.contains(user.uid))
+                {showSnackBar(context, "You left a community")}
+              else
+                {showSnackBar(context, "You joined a community")}
+            });
+  }
 
   Stream<List<Community>> getUserCommunities() {
     String uid = _ref.watch(userProvider)!.uid;
@@ -128,10 +129,18 @@ class CommunityController extends StateNotifier<bool> {
     }
     state = false;
     final res = await _communityRepository.editCommuity(community);
-    res.fold((l) => showSnackBar(context, l.message), (r) => Routemaster.of(context).pop());
+    res.fold((l) => showSnackBar(context, l.message),
+        (r) => Routemaster.of(context).pop());
   }
 
   Stream<List<Community>> searchCommunity(String query) {
     return _communityRepository.searchCommunity(query);
+  }
+
+  void addMods(
+      String communityName, List<String> uids, BuildContext context) async {
+    final res = await _communityRepository.addMods(communityName, uids);
+    res.fold((l) => showSnackBar(context, l.toString()),
+        (r) => Routemaster.of(context).pop());
   }
 }
