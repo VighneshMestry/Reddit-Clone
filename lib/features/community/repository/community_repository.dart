@@ -37,6 +37,30 @@ class CommunityRepository {
     }
   }
 
+  FutureVoid joinCommunity (String communityName, String uid) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        'members' : FieldValue.arrayUnion([uid])
+      })); 
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid leaveCommunity (String communityName, String uid) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        'members' : FieldValue.arrayRemove([uid])
+      })); 
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   Stream<List<Community>> getUserCommunities(String uid) {
     // snapshots() provides the list of QuerySnapshot so the map function iterates the list and provides event which is the every single QuerySnapshot from the list
     return _communities

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/home/delegate/search_community_delegate.dart';
 import 'package:reddit_clone/features/home/drawers/community_list_drawer.dart';
 import 'package:reddit_clone/features/home/drawers/profile_drawer.dart';
@@ -25,7 +26,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final user = ref.watch(userProvider)!;
+    final user = ref.watch(userProvider)!;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home"),
@@ -50,7 +51,7 @@ class HomeScreen extends ConsumerWidget {
               return IconButton(
                 onPressed: () => displayEndDrawer(context),
                 // icon: const CircleAvatar(backgroundImage: NetworkImage("")),
-                icon: const Icon(Icons.person),
+                icon: CircleAvatar(backgroundImage: NetworkImage(user.profilePic),)
               );
             }
           )
