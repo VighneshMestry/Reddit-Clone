@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/auth/repository/auth_repository.dart';
-import 'package:reddit_clone/models/user_model.dart';
+import 'package:reddit_clone/features/models/user_model.dart';
 
 // final userProvider = StateProvider<UserModel?>((ref) => null);
 
