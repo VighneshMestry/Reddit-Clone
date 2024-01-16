@@ -112,7 +112,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'Reddit',
             // theme: ref.watch(themeNotifierProvider),
-            theme: Pallete.darkModeAppTheme,
+            theme: ref.watch(themeNotifierProvider),
             routerDelegate: RoutemasterDelegate(
               routesBuilder: (context) {
                 if (data != null) {
