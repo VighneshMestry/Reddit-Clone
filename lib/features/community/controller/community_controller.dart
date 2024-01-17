@@ -8,7 +8,7 @@ import 'package:reddit_clone/core/failure.dart';
 import 'package:reddit_clone/core/providers/storage_repository_provider.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/community/repository/community_repository.dart';
-import 'package:reddit_clone/features/models/community_model.dart';
+import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:routemaster/routemaster.dart';
 

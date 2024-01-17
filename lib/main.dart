@@ -5,7 +5,7 @@ import 'package:reddit_clone/core/common/error_line.dart';
 import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/router.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
-import 'package:reddit_clone/features/models/user_model.dart';
+import 'package:reddit_clone/models/user_model.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:routemaster/routemaster.dart';

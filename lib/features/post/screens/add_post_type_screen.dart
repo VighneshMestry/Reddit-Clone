@@ -3,7 +3,11 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/common/error_line.dart';
+import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/utils.dart';
+import 'package:reddit_clone/features/community/controller/community_controller.dart';
+import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 
 class AddPostTypeScreen extends ConsumerStatefulWidget {
@@ -21,6 +25,8 @@ class AddPostTypeScreen extends ConsumerStatefulWidget {
 class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  List<Community> communities = [];
+  Community? selectedCommunity;
   @override
   void dispose() {
     super.dispose();
@@ -112,7 +118,26 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                 ),
               ),
             const SizedBox(height: 20),
-            
+            const Align(
+                alignment: Alignment.topLeft, child: Text("Select Community")),
+            ref.watch(getUserCommunitiesProvider).when(
+                data: (data) {
+                  communities = data;
+                  return DropdownButton(
+                    value: selectedCommunity ?? data[0],
+                    items: data
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                        .toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        selectedCommunity = val;
+                      });
+                    },
+                  );
+                },
+                error: (error, stackTrace) =>
+                    ErrorLine(error: error.toString()),
+                loading: () => const Loader())
           ],
         ),
       ),
