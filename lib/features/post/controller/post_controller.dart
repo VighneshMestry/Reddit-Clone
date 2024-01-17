@@ -19,6 +19,11 @@ final postControllerProvider = StateNotifierProvider<PostController, bool>((ref)
   );
 });
 
+final getUserPostProvider = StreamProvider.family((ref, List<Community> communities) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchUserPosts(communities);
+});
+
 class PostController extends StateNotifier<bool> {
   StorageRepository _storageRepository;
   Ref _ref;
@@ -145,5 +150,12 @@ class PostController extends StateNotifier<bool> {
         },
       );
     });
+  }
+
+    Stream<List<Post>> fetchUserPosts(List<Community> communities) {
+    if (communities.isNotEmpty) {
+      return _postRepository.fetchUserPosts(communities);
+    }
+    return Stream.value([]);
   }
 }
