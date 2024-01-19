@@ -9,6 +9,7 @@ import 'package:reddit_clone/features/community/controller/community_controller.
 import 'package:reddit_clone/features/post/controller/post_controller.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
 class PostCard extends ConsumerWidget {
   final Post post;
@@ -31,6 +32,22 @@ class PostCard extends ConsumerWidget {
       ref.read(postControllerProvider.notifier).deletePost(post);
     }
 
+    void upvote (WidgetRef ref) {
+      ref.read(postControllerProvider.notifier).upvote(post);
+    }
+
+    void downvote(WidgetRef ref) { 
+      ref.read(postControllerProvider.notifier).downvote(post);
+    }
+
+    void navigateToUser() {
+      Routemaster.of(context).push("/u/${user.uid}");
+    }
+
+    void navigateToCommunity () {
+      Routemaster.of(context).push("/r/${post.communityName}");
+    }
+
     return Column(
       children: [
         Container(
@@ -44,7 +61,7 @@ class PostCard extends ConsumerWidget {
               Column(
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => upvote(ref),
                     icon: Icon(
                       Constants.up,
                       size: 30,
@@ -58,7 +75,7 @@ class PostCard extends ConsumerWidget {
                     style: const TextStyle(fontSize: 17),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => downvote(ref),
                     icon: Icon(
                       Constants.down,
                       size: 30,
@@ -86,7 +103,7 @@ class PostCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () => navigateToCommunity(),
                                     child: CircleAvatar(
                                       backgroundImage: NetworkImage(
                                         post.communityProfilePic,
@@ -108,7 +125,7 @@ class PostCard extends ConsumerWidget {
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: () {},
+                                          onTap: () => navigateToUser(),
                                           child: Text(
                                             'u/${post.username}',
                                             style:
@@ -204,7 +221,7 @@ class PostCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => upvote(ref),
                                     icon: Icon(
                                       Constants.up,
                                       size: 28,
@@ -220,7 +237,7 @@ class PostCard extends ConsumerWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => downvote(ref),
                                     icon: Icon(
                                       Constants.down,
                                       size: 28,

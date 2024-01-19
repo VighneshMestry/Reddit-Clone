@@ -162,4 +162,14 @@ class PostController extends StateNotifier<bool> {
   void deletePost(Post post) async {
     await _postRepository.deletePost(post);
   }
+
+  void upvote (Post post) {
+    final userId = _ref.read(userProvider)!.uid;
+    _postRepository.upvote(post, userId);
+  }
+
+  void downvote(Post post) { 
+    final userId = _ref.read(userProvider)!.uid;
+    _postRepository.downvote(post, userId);
+  }
 }
