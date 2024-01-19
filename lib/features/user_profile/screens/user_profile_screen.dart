@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:reddit_clone/core/common/error_line.dart';
 import 'package:reddit_clone/core/common/loader.dart';
+import 'package:reddit_clone/core/common/post_card.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:reddit_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:routemaster/routemaster.dart';
 
 class UserProfileScreen extends ConsumerWidget {
@@ -50,7 +52,8 @@ class UserProfileScreen extends ConsumerWidget {
                           alignment: Alignment.bottomLeft,
                           padding: const EdgeInsets.all(20),
                           child: OutlinedButton(
-                            onPressed: () => navigateToEditProfileScreen(context),
+                            onPressed: () =>
+                                navigateToEditProfileScreen(context),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
@@ -95,7 +98,20 @@ class UserProfileScreen extends ConsumerWidget {
                   ),
                 ];
               },
-              body: Text("Displaying posts"),
+              body: ref.watch(getUserPostsProvider(user.uid)).when(
+                    data: (posts) {
+                      return ListView.builder(
+                        itemCount: posts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final post = posts[index];
+                          return PostCard(post: post);
+                        },
+                      );
+                    },
+                    error: (error, stackTrace) =>
+                        ErrorLine(error: error.toString()),
+                    loading: () => const Loader(),
+                  ),
             ),
             error: (error, stackTrace) => ErrorLine(error: error.toString()),
             loading: () => const Loader(),

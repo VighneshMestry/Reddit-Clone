@@ -12,7 +12,7 @@ class FeedScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(getUserCommunitiesProvider).when(
-        data: (communities) => ref.watch(getUserPostProvider(communities)).when(
+        data: (communities) => ref.watch(getUserFeedPostProvider(communities)).when(
               data: (posts) {
                 return ListView.builder(
                   itemCount: posts.length,

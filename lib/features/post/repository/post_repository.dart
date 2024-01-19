@@ -33,7 +33,7 @@ class PostRepository {
     }
   }
 
-  Stream<List<Post>> fetchUserPosts(List<Community> communities) {
+  Stream<List<Post>> fetchUserFeedPosts(List<Community> communities) {
     return _posts
         .where("communityName",
             whereIn: communities.map((e) => e.name).toList())
