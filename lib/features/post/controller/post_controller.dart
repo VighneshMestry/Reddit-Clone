@@ -6,12 +6,14 @@ import 'package:reddit_clone/core/providers/storage_repository_provider.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/post/repository/post_repository.dart';
+import 'package:reddit_clone/models/comment_model.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
-final postControllerProvider = StateNotifierProvider<PostController, bool>((ref) {
+final postControllerProvider =
+    StateNotifierProvider<PostController, bool>((ref) {
   return PostController(
     storageRepository: ref.read(storageRepositoryProvider),
     ref: ref,
@@ -19,9 +21,15 @@ final postControllerProvider = StateNotifierProvider<PostController, bool>((ref)
   );
 });
 
-final getUserFeedPostProvider = StreamProvider.family((ref, List<Community> communities) {
+final getUserFeedPostProvider =
+    StreamProvider.family((ref, List<Community> communities) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.fetchUserFeedPosts(communities);
+});
+
+final getPostByIdProvider = StreamProvider.family((ref, String postId)  {
+  final postController = ref.read(postControllerProvider.notifier);
+  return postController.getPostById(postId);
 });
 
 class PostController extends StateNotifier<bool> {
@@ -152,7 +160,7 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
-    Stream<List<Post>> fetchUserFeedPosts(List<Community> communities) {
+  Stream<List<Post>> fetchUserFeedPosts(List<Community> communities) {
     if (communities.isNotEmpty) {
       return _postRepository.fetchUserFeedPosts(communities);
     }
@@ -163,13 +171,38 @@ class PostController extends StateNotifier<bool> {
     await _postRepository.deletePost(post);
   }
 
-  void upvote (Post post) {
+  void upvote(Post post) {
     final userId = _ref.read(userProvider)!.uid;
     _postRepository.upvote(post, userId);
   }
 
-  void downvote(Post post) { 
+  void downvote(Post post) {
     final userId = _ref.read(userProvider)!.uid;
     _postRepository.downvote(post, userId);
+  }
+
+  Stream<Post> getPostById(String postId) {
+    return _postRepository.getPostById(postId);
+  }
+
+  void addComment({
+    required BuildContext context,
+    required String text,
+    required String postId,
+  }) async {
+    String commentId = const Uuid().v1();
+    final user = _ref.read(userProvider)!;
+    Comment comment = Comment(
+        id: commentId,
+        text: text,
+        createdAt: DateTime.now(),
+        postId: postId,
+        username: user.name,
+        profilePic: user.profilePic);
+    final res = await _postRepository.addComments(comment);
+    res.fold(
+      (l) => showSnackBar(context, l.message),
+      (r) => showSnackBar(context, "Comment Posted!"),
+    );
   }
 }
