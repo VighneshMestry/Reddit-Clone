@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/enums/enums.dart';
 import 'package:reddit_clone/core/providers/storage_repository_provider.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/post/repository/post_repository.dart';
+import 'package:reddit_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:reddit_clone/models/comment_model.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
@@ -57,7 +59,7 @@ class PostController extends StateNotifier<bool> {
     required String description,
   }) async {
     state = true;
-    final postId = Uuid().v1();
+    final postId = const Uuid().v1();
     final user = _ref.read(userProvider)!;
 
     Post post = Post(
@@ -77,6 +79,7 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+    _ref.read(userProfileControllerProvider.notifier).upateUserKarma(Userkarma.textPost);
     state = false;
     res.fold(
       (l) => showSnackBar(context, l.message),
@@ -114,6 +117,7 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+    _ref.read(userProfileControllerProvider.notifier).upateUserKarma(Userkarma.linkPost);
     state = false;
     res.fold(
       (l) => showSnackBar(context, l.message),
@@ -154,6 +158,7 @@ class PostController extends StateNotifier<bool> {
       );
 
       final res = await _postRepository.addPost(post);
+      _ref.read(userProfileControllerProvider.notifier).upateUserKarma(Userkarma.imagePost);
       state = false;
       res.fold(
         (l) => showSnackBar(context, l.message),
@@ -173,6 +178,7 @@ class PostController extends StateNotifier<bool> {
   }
 
   void deletePost(Post post) async {
+    _ref.read(userProfileControllerProvider.notifier).upateUserKarma(Userkarma.delete);
     await _postRepository.deletePost(post);
   }
 
@@ -205,6 +211,7 @@ class PostController extends StateNotifier<bool> {
         username: user.name,
         profilePic: user.profilePic);
     final res = await _postRepository.addComments(comment);
+    _ref.read(userProfileControllerProvider.notifier).upateUserKarma(Userkarma.comment);
     res.fold(
       (l) => showSnackBar(context, l.message),
       (r) => showSnackBar(context, "Comment Posted!"),
