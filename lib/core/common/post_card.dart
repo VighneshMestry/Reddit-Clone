@@ -7,6 +7,7 @@ import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:reddit_clone/features/post/controller/post_controller.dart';
+import 'package:reddit_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -38,6 +39,10 @@ class PostCard extends ConsumerWidget {
 
     void downvote(WidgetRef ref) { 
       ref.read(postControllerProvider.notifier).downvote(post);
+    }
+
+    void awardPost(WidgetRef ref, String award, BuildContext context) {
+      ref.read(postControllerProvider.notifier).awardPost(post: post, award: award, context: context);
     }
 
     void navigateToUser() {
@@ -311,7 +316,7 @@ class PostCard extends ConsumerWidget {
                                                       user.awards[index];
 
                                                   return GestureDetector(
-                                                    onTap: () {},
+                                                    onTap: () => awardPost(ref, award, context),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(

@@ -8,6 +8,7 @@ enum Userkarma {
   textPost(2),
   imagePost(3),
   linkPost(3),
+  awardPost(5),
   delete(-1);
 
   final int karma;
