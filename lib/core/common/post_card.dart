@@ -66,34 +66,34 @@ class PostCard extends ConsumerWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                children: [
-                  IconButton(
-                    onPressed: () => upvote(ref),
-                    icon: Icon(
-                      Constants.up,
-                      size: 30,
-                      color: post.upvotes.contains(user.uid)
-                          ? Pallete.redColor
-                          : null,
-                    ),
-                  ),
-                  Text(
-                    '${post.upvotes.length - post.downvotes.length == 0 ? 'Vote' : post.upvotes.length - post.downvotes.length}',
-                    style: const TextStyle(fontSize: 17),
-                  ),
-                  IconButton(
-                    onPressed: () => downvote(ref),
-                    icon: Icon(
-                      Constants.down,
-                      size: 30,
-                      color: post.downvotes.contains(user.uid)
-                          ? Pallete.blueColor
-                          : null,
-                    ),
-                  ),
-                ],
-              ),
+              // Column(
+              //   children: [
+              //     IconButton(
+              //       onPressed: () => upvote(ref),
+              //       icon: Icon(
+              //         Constants.up,
+              //         size: 30,
+              //         color: post.upvotes.contains(user.uid)
+              //             ? Pallete.redColor
+              //             : null,
+              //       ),
+              //     ),
+              //     Text(
+              //       '${post.upvotes.length - post.downvotes.length == 0 ? 'Vote' : post.upvotes.length - post.downvotes.length}',
+              //       style: const TextStyle(fontSize: 17),
+              //     ),
+              //     IconButton(
+              //       onPressed: () => downvote(ref),
+              //       icon: Icon(
+              //         Constants.down,
+              //         size: 30,
+              //         color: post.downvotes.contains(user.uid)
+              //             ? Pallete.blueColor
+              //             : null,
+              //       ),
+              //     ),
+              //   ],
+              // ),
               Expanded(
                 child: Column(
                   children: [
@@ -229,7 +229,7 @@ class PostCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () => upvote(ref),
+                                    onPressed: isGuest ? () {} : () => upvote(ref),
                                     icon: Icon(
                                       Constants.up,
                                       size: 28,
@@ -245,7 +245,7 @@ class PostCard extends ConsumerWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   IconButton(
-                                    onPressed: () => downvote(ref),
+                                    onPressed: isGuest ? () {} : () => downvote(ref),
                                     icon: Icon(
                                       Constants.down,
                                       size: 28,
@@ -315,7 +315,7 @@ class PostCard extends ConsumerWidget {
                                                       user.awards[index];
 
                                                   return GestureDetector(
-                                                    onTap: () => awardPost(ref, award, context),
+                                                    onTap: isGuest ? () {} : () => awardPost(ref, award, context),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
